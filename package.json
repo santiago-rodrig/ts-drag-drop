@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
       "watch": "tsc -w",
-      "start": "lite-server"
+      "start": "lite-server",
+      "format": "prettier --write ./src"
   },
   "devDependencies": {
     "lite-server": "^2.6.1",
