@@ -32,6 +32,78 @@ function validate(validation: Validatable): boolean {
     return true
 }
 
+enum ProjectStatus {
+    ACTIVE = 'active',
+    INACTIVE = 'finished',
+}
+
+type ProjectData = [string, string, number]
+
+class Project {
+    title: string
+    description: string
+    people: number
+    status: ProjectStatus = ProjectStatus.ACTIVE
+
+    constructor(
+        title: string,
+        description: string,
+        people: number,
+        status?: ProjectStatus
+    ) {
+        this.title = title
+        this.description = description
+        this.people = people
+
+        if (status) this.status = status
+    }
+}
+
+class ProjectState {
+    private _projects: Project[] = []
+    private _listeners: Function[] = []
+    private static _instance: ProjectState
+
+    static getInstance() {
+        if (this._instance) return this._instance
+
+        this._instance = new ProjectState()
+        return this._instance
+    }
+
+    private constructor() {}
+
+    addProject(projectData: ProjectData): void {
+        this._projects.push(new Project(...projectData))
+        this.callListeners()
+    }
+
+    getProjects(status?: ProjectStatus) {
+        switch (status) {
+            case ProjectStatus.ACTIVE:
+                return [...this._projects].filter(
+                    (project) => project.status === ProjectStatus.ACTIVE
+                )
+            case ProjectStatus.INACTIVE:
+                return [...this._projects].filter(
+                    (project) => project.status === ProjectStatus.INACTIVE
+                )
+            default:
+                return [...this._projects]
+        }
+    }
+
+    private callListeners(): void {
+        this._listeners.forEach((listener) => listener())
+    }
+
+    addListener(listener: Function): void {
+        this._listeners.push(listener)
+    }
+}
+
+const projectState = ProjectState.getInstance()
+
 function Autobind(
     _1: any,
     _2: string,
@@ -46,17 +118,13 @@ function Autobind(
     } as PropertyDescriptor
 }
 
-enum ProjectListType {
-    ACTIVE = 'active',
-    INACTIVE = 'finished',
-}
-
 class ProjectsList {
     templateEl: HTMLTemplateElement
     targetNode: HTMLDivElement
     element: HTMLElement
+    projects: Project[] = []
 
-    constructor(private type: ProjectListType) {
+    constructor(private type: ProjectStatus) {
         this.templateEl = document.getElementById(
             'project-list'
         )! as HTMLTemplateElement
@@ -69,7 +137,23 @@ class ProjectsList {
         this.element.id = `${this.type}-projects`
 
         this.renderContents()
+
+        projectState.addListener(() => {
+            this.projects = projectState.getProjects(this.type)
+            this.renderProjects()
+        })
+
+        projectState.addListener(function () {}.bind(this))
+
         this.attach()
+    }
+
+    private renderProjects() {
+        const list = document.getElementById(
+            `${this.type}-projects-list`
+        )! as HTMLUListElement
+
+        this.projects.forEach((project) => (list.textContent += project.title))
     }
 
     private attach() {
@@ -134,9 +218,7 @@ class ProjectsInput {
         const inputValues = this.getInputValues()
 
         if (inputValues) {
-            const [title, description, people] = inputValues
-
-            console.log(title, description, people)
+            projectState.addProject(inputValues)
             this.clearInputValues()
         }
     }
@@ -191,5 +273,5 @@ class ProjectsInput {
 }
 
 const projectInput = new ProjectsInput()
-const activeProjectsList = new ProjectsList(ProjectListType.ACTIVE)
-const inactiveProjectsList = new ProjectsList(ProjectListType.INACTIVE)
+const activeProjectsList = new ProjectsList(ProjectStatus.ACTIVE)
+const inactiveProjectsList = new ProjectsList(ProjectStatus.INACTIVE)

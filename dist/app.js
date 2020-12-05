@@ -5,6 +5,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 function validate(validation) {
     var value = validation.value;
     if (typeof value === 'string') {
@@ -23,6 +30,56 @@ function validate(validation) {
     }
     return true;
 }
+var ProjectStatus;
+(function (ProjectStatus) {
+    ProjectStatus["ACTIVE"] = "active";
+    ProjectStatus["INACTIVE"] = "finished";
+})(ProjectStatus || (ProjectStatus = {}));
+var Project = /** @class */ (function () {
+    function Project(title, description, people, status) {
+        this.status = ProjectStatus.ACTIVE;
+        this.title = title;
+        this.description = description;
+        this.people = people;
+        if (status)
+            this.status = status;
+    }
+    return Project;
+}());
+var ProjectState = /** @class */ (function () {
+    function ProjectState() {
+        this._projects = [];
+        this._listeners = [];
+    }
+    ProjectState.getInstance = function () {
+        if (this._instance)
+            return this._instance;
+        this._instance = new ProjectState();
+        return this._instance;
+    };
+    ProjectState.prototype.addProject = function (projectData) {
+        this._projects.push(new (Project.bind.apply(Project, __spreadArrays([void 0], projectData)))());
+        this.callListeners();
+    };
+    ProjectState.prototype.getProjects = function (status) {
+        switch (status) {
+            case ProjectStatus.ACTIVE:
+                return __spreadArrays(this._projects).filter(function (project) { return project.status === ProjectStatus.ACTIVE; });
+            case ProjectStatus.INACTIVE:
+                return __spreadArrays(this._projects).filter(function (project) { return project.status === ProjectStatus.INACTIVE; });
+            default:
+                return __spreadArrays(this._projects);
+        }
+    };
+    ProjectState.prototype.callListeners = function () {
+        this._listeners.forEach(function (listener) { return listener(); });
+    };
+    ProjectState.prototype.addListener = function (listener) {
+        this._listeners.push(listener);
+    };
+    return ProjectState;
+}());
+var projectState = ProjectState.getInstance();
 function Autobind(_1, _2, descriptor) {
     return {
         configurable: true,
@@ -32,22 +89,28 @@ function Autobind(_1, _2, descriptor) {
         },
     };
 }
-var ProjectListType;
-(function (ProjectListType) {
-    ProjectListType["ACTIVE"] = "active";
-    ProjectListType["INACTIVE"] = "finished";
-})(ProjectListType || (ProjectListType = {}));
 var ProjectsList = /** @class */ (function () {
     function ProjectsList(type) {
+        var _this = this;
         this.type = type;
+        this.projects = [];
         this.templateEl = document.getElementById('project-list');
         this.targetNode = document.getElementById('app');
         var importedNode = document.importNode(this.templateEl.content, true);
         this.element = importedNode.firstElementChild;
         this.element.id = this.type + "-projects";
         this.renderContents();
+        projectState.addListener(function () {
+            _this.projects = projectState.getProjects(_this.type);
+            _this.renderProjects();
+        });
+        projectState.addListener(function () { }.bind(this));
         this.attach();
     }
+    ProjectsList.prototype.renderProjects = function () {
+        var list = document.getElementById(this.type + "-projects-list");
+        this.projects.forEach(function (project) { return (list.textContent += project.title); });
+    };
     ProjectsList.prototype.attach = function () {
         this.targetNode.insertAdjacentElement('beforeend', this.element);
     };
@@ -75,8 +138,7 @@ var ProjectsInput = /** @class */ (function () {
         event.preventDefault();
         var inputValues = this.getInputValues();
         if (inputValues) {
-            var title = inputValues[0], description = inputValues[1], people = inputValues[2];
-            console.log(title, description, people);
+            projectState.addProject(inputValues);
             this.clearInputValues();
         }
     };
@@ -122,5 +184,6 @@ var ProjectsInput = /** @class */ (function () {
     return ProjectsInput;
 }());
 var projectInput = new ProjectsInput();
-var activeProjectsList = new ProjectsList(ProjectListType.ACTIVE);
-var inactiveProjectsList = new ProjectsList(ProjectListType.INACTIVE);
+var activeProjectsList = new ProjectsList(ProjectStatus.ACTIVE);
+var inactiveProjectsList = new ProjectsList(ProjectStatus.INACTIVE);
+//# sourceMappingURL=app.js.map
