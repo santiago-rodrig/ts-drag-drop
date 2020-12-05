@@ -32,8 +32,33 @@ function Autobind(_1, _2, descriptor) {
         },
     };
 }
-var ProjectInput = /** @class */ (function () {
-    function ProjectInput() {
+var ProjectListType;
+(function (ProjectListType) {
+    ProjectListType["ACTIVE"] = "active";
+    ProjectListType["INACTIVE"] = "finished";
+})(ProjectListType || (ProjectListType = {}));
+var ProjectsList = /** @class */ (function () {
+    function ProjectsList(type) {
+        this.type = type;
+        this.templateEl = document.getElementById('project-list');
+        this.targetNode = document.getElementById('app');
+        var importedNode = document.importNode(this.templateEl.content, true);
+        this.element = importedNode.firstElementChild;
+        this.element.id = this.type + "-projects";
+        this.renderContents();
+        this.attach();
+    }
+    ProjectsList.prototype.attach = function () {
+        this.targetNode.insertAdjacentElement('beforeend', this.element);
+    };
+    ProjectsList.prototype.renderContents = function () {
+        this.element.querySelector('h2').textContent = this.type.toUpperCase() + " PROJECTS";
+        this.element.querySelector('ul').id = this.type + "-projects-list";
+    };
+    return ProjectsList;
+}());
+var ProjectsInput = /** @class */ (function () {
+    function ProjectsInput() {
         this.templateEl = document.getElementById('project-input');
         this.targetNode = document.getElementById('app');
         this._templateContents = document.importNode(this.templateEl.content, true);
@@ -46,7 +71,7 @@ var ProjectInput = /** @class */ (function () {
         this.configure();
         this.attach();
     }
-    ProjectInput.prototype.submitHandler = function (event) {
+    ProjectsInput.prototype.submitHandler = function (event) {
         event.preventDefault();
         var inputValues = this.getInputValues();
         if (inputValues) {
@@ -55,18 +80,28 @@ var ProjectInput = /** @class */ (function () {
             this.clearInputValues();
         }
     };
-    ProjectInput.prototype.clearInputValues = function () {
+    ProjectsInput.prototype.clearInputValues = function () {
         this.titleInput.value = '';
         this.descriptionInput.value = '';
         this.peopleInput.value = '';
     };
-    ProjectInput.prototype.getInputValues = function () {
+    ProjectsInput.prototype.getInputValues = function () {
         var titleInputValue = this.titleInput.value;
         var descriptionInputValue = this.descriptionInput.value;
         var peopleInputValue = this.peopleInput.value;
-        var titleInputValidation = { value: titleInputValue, minLength: 1 };
-        var descriptionInputValidation = { value: descriptionInputValue, minLength: 5 };
-        var peopleInputValidation = { value: +peopleInputValue, min: 1, max: 10 };
+        var titleInputValidation = {
+            value: titleInputValue,
+            minLength: 1,
+        };
+        var descriptionInputValidation = {
+            value: descriptionInputValue,
+            minLength: 5,
+        };
+        var peopleInputValidation = {
+            value: +peopleInputValue,
+            min: 1,
+            max: 10,
+        };
         if (!validate(titleInputValidation) ||
             !validate(descriptionInputValidation) ||
             !validate(peopleInputValidation)) {
@@ -75,15 +110,17 @@ var ProjectInput = /** @class */ (function () {
         }
         return [titleInputValue, descriptionInputValue, +peopleInputValue];
     };
-    ProjectInput.prototype.configure = function () {
+    ProjectsInput.prototype.configure = function () {
         this.formEl.addEventListener('submit', this.submitHandler);
     };
-    ProjectInput.prototype.attach = function () {
+    ProjectsInput.prototype.attach = function () {
         this.targetNode.insertAdjacentElement('afterbegin', this.formEl);
     };
     __decorate([
         Autobind
-    ], ProjectInput.prototype, "submitHandler", null);
-    return ProjectInput;
+    ], ProjectsInput.prototype, "submitHandler", null);
+    return ProjectsInput;
 }());
-var projectInput = new ProjectInput();
+var projectInput = new ProjectsInput();
+var activeProjectsList = new ProjectsList(ProjectListType.ACTIVE);
+var inactiveProjectsList = new ProjectsList(ProjectListType.INACTIVE);

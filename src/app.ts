@@ -46,7 +46,46 @@ function Autobind(
     } as PropertyDescriptor
 }
 
-class ProjectInput {
+enum ProjectListType {
+    ACTIVE = 'active',
+    INACTIVE = 'finished',
+}
+
+class ProjectsList {
+    templateEl: HTMLTemplateElement
+    targetNode: HTMLDivElement
+    element: HTMLElement
+
+    constructor(private type: ProjectListType) {
+        this.templateEl = document.getElementById(
+            'project-list'
+        )! as HTMLTemplateElement
+
+        this.targetNode = document.getElementById('app')! as HTMLDivElement
+
+        const importedNode = document.importNode(this.templateEl.content, true)
+
+        this.element = importedNode.firstElementChild! as HTMLElement
+        this.element.id = `${this.type}-projects`
+
+        this.renderContents()
+        this.attach()
+    }
+
+    private attach() {
+        this.targetNode.insertAdjacentElement('beforeend', this.element)
+    }
+
+    private renderContents() {
+        this.element.querySelector(
+            'h2'
+        )!.textContent = `${this.type.toUpperCase()} PROJECTS`
+
+        this.element.querySelector('ul')!.id = `${this.type}-projects-list`
+    }
+}
+
+class ProjectsInput {
     templateEl: HTMLTemplateElement
     targetNode: HTMLDivElement
     formEl: HTMLFormElement
@@ -151,4 +190,6 @@ class ProjectInput {
     }
 }
 
-const projectInput = new ProjectInput()
+const projectInput = new ProjectsInput()
+const activeProjectsList = new ProjectsList(ProjectListType.ACTIVE)
+const inactiveProjectsList = new ProjectsList(ProjectListType.INACTIVE)
