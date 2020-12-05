@@ -5,6 +5,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+function validate(validation) {
+    var value = validation.value;
+    if (typeof value === 'string') {
+        var _a = validation, minLength = _a.minLength, maxLength = _a.maxLength;
+        if (minLength && minLength > value.length)
+            return false;
+        if (maxLength && maxLength < value.length)
+            return false;
+    }
+    else {
+        var _b = validation, min = _b.min, max = _b.max;
+        if (min && min > value)
+            return false;
+        if (max && max < value)
+            return false;
+    }
+    return true;
+}
 function Autobind(_1, _2, descriptor) {
     return {
         configurable: true,
@@ -46,8 +64,13 @@ var ProjectInput = /** @class */ (function () {
         var titleInputValue = this.titleInput.value;
         var descriptionInputValue = this.descriptionInput.value;
         var peopleInputValue = this.peopleInput.value;
-        if (titleInputValue.trim() === '' || descriptionInputValue.trim() === '' || peopleInputValue.trim() === '') {
-            alert('All fields are required!');
+        var titleInputValidation = { value: titleInputValue, minLength: 1 };
+        var descriptionInputValidation = { value: descriptionInputValue, minLength: 5 };
+        var peopleInputValidation = { value: +peopleInputValue, min: 1, max: 10 };
+        if (!validate(titleInputValidation) ||
+            !validate(descriptionInputValidation) ||
+            !validate(peopleInputValidation)) {
+            alert('Invalid input values!');
             return;
         }
         return [titleInputValue, descriptionInputValue, +peopleInputValue];

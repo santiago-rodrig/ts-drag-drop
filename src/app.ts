@@ -1,4 +1,42 @@
-function Autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
+interface ValidatableNumber {
+    value: number
+    min?: number
+    max?: number
+}
+
+interface ValidatableString {
+    value: string
+    minLength?: number
+    maxLength?: number
+}
+
+type Validatable = ValidatableNumber | ValidatableString
+
+function validate(validation: Validatable): boolean {
+    const { value } = validation
+
+    if (typeof value === 'string') {
+        const { minLength, maxLength } = validation as ValidatableString
+
+        if (minLength && minLength > value.length) return false
+
+        if (maxLength && maxLength < value.length) return false
+    } else {
+        const { min, max } = validation as ValidatableNumber
+
+        if (min && min > value) return false
+
+        if (max && max < value) return false
+    }
+
+    return true
+}
+
+function Autobind(
+    _1: any,
+    _2: string,
+    descriptor: PropertyDescriptor
+): PropertyDescriptor {
     return {
         configurable: true,
         enumerable: false,
@@ -75,12 +113,28 @@ class ProjectInput {
         const descriptionInputValue = this.descriptionInput.value
         const peopleInputValue = this.peopleInput.value
 
+        const titleInputValidation: ValidatableString = {
+            value: titleInputValue,
+            minLength: 1,
+        }
+
+        const descriptionInputValidation: ValidatableString = {
+            value: descriptionInputValue,
+            minLength: 5,
+        }
+
+        const peopleInputValidation: ValidatableNumber = {
+            value: +peopleInputValue,
+            min: 1,
+            max: 10,
+        }
+
         if (
-            titleInputValue.trim() === '' ||
-            descriptionInputValue.trim() === '' ||
-            peopleInputValue.trim() === ''
+            !validate(titleInputValidation) ||
+            !validate(descriptionInputValidation) ||
+            !validate(peopleInputValidation)
         ) {
-            alert('All fields are required!')
+            alert('Invalid input values!')
 
             return
         }
