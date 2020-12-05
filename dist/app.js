@@ -11,7 +11,7 @@ function Autobind(_1, _2, descriptor) {
         enumerable: false,
         get: function () {
             return descriptor.value.bind(this);
-        }
+        },
     };
 }
 var ProjectInput = /** @class */ (function () {
@@ -30,7 +30,27 @@ var ProjectInput = /** @class */ (function () {
     }
     ProjectInput.prototype.submitHandler = function (event) {
         event.preventDefault();
-        console.log(this.titleInput.value);
+        var inputValues = this.getInputValues();
+        if (inputValues) {
+            var title = inputValues[0], description = inputValues[1], people = inputValues[2];
+            console.log(title, description, people);
+            this.clearInputValues();
+        }
+    };
+    ProjectInput.prototype.clearInputValues = function () {
+        this.titleInput.value = '';
+        this.descriptionInput.value = '';
+        this.peopleInput.value = '';
+    };
+    ProjectInput.prototype.getInputValues = function () {
+        var titleInputValue = this.titleInput.value;
+        var descriptionInputValue = this.descriptionInput.value;
+        var peopleInputValue = this.peopleInput.value;
+        if (titleInputValue.trim() === '' || descriptionInputValue.trim() === '' || peopleInputValue.trim() === '') {
+            alert('All fields are required!');
+            return;
+        }
+        return [titleInputValue, descriptionInputValue, +peopleInputValue];
     };
     ProjectInput.prototype.configure = function () {
         this.formEl.addEventListener('submit', this.submitHandler);

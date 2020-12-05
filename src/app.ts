@@ -53,7 +53,39 @@ class ProjectInput {
     @Autobind
     private submitHandler(event: Event) {
         event.preventDefault()
-        console.log(this.titleInput.value)
+
+        const inputValues = this.getInputValues()
+
+        if (inputValues) {
+            const [title, description, people] = inputValues
+
+            console.log(title, description, people)
+            this.clearInputValues()
+        }
+    }
+
+    private clearInputValues() {
+        this.titleInput.value = ''
+        this.descriptionInput.value = ''
+        this.peopleInput.value = ''
+    }
+
+    private getInputValues(): [string, string, number] | void {
+        const titleInputValue = this.titleInput.value
+        const descriptionInputValue = this.descriptionInput.value
+        const peopleInputValue = this.peopleInput.value
+
+        if (
+            titleInputValue.trim() === '' ||
+            descriptionInputValue.trim() === '' ||
+            peopleInputValue.trim() === ''
+        ) {
+            alert('All fields are required!')
+
+            return
+        }
+
+        return [titleInputValue, descriptionInputValue, +peopleInputValue]
     }
 
     private configure() {
