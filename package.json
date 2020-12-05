@@ -1,0 +1,21 @@
+{
+  "name": "ts-drag-drop",
+  "version": "1.0.0",
+  "description": "drag and drop app using typescript",
+  "main": "index.js",
+  "repository": "git@github.com:santiago-rodrig/ts-drag-drop.git",
+  "author": "Santiago Rodriguez <santo1996.29@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+      "watch": "tsc -w",
+      "start": "lite-server"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "typescript": "^4.1.2"
+  }
+}
