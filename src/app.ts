@@ -155,6 +155,8 @@ class ProjectsList {
             `${this.type}-projects-list`
         )! as HTMLUListElement
 
+        list.innerHTML = ''
+
         this.projects.forEach((project) => {
             const listItem = document.createElement('li')
 
