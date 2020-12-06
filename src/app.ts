@@ -10,6 +10,17 @@ interface ValidatableString {
     maxLength?: number
 }
 
+interface Draggable {
+    dragStartHandler(event: DragEvent): void
+    dragEndHandler(event: DragEvent): void
+}
+
+interface DragTarget {
+    dragOverHandler(event: DragEvent): void
+    dragDropHandler(event: DragEvent): void
+    dragLeaveHandler(event: DragEvent): void
+}
+
 type Validatable = ValidatableNumber | ValidatableString
 type ProjectData = [string, string, number]
 
@@ -22,7 +33,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
         templateId: string,
         targetNodeId: string,
         insertAtStart: boolean,
-        newElementId?: string,
+        newElementId?: string
     ) {
         this.templateEl = document.getElementById(
             templateId
@@ -147,7 +158,9 @@ function Autobind(
     } as PropertyDescriptor
 }
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem
+    extends Component<HTMLUListElement, HTMLLIElement>
+    implements Draggable {
     private _project: Project
 
     get projectMembers() {
@@ -166,8 +179,20 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
         this.renderContents()
     }
 
+    @Autobind
+    dragStartHandler(event: DragEvent) {
+        console.log(event)
+    }
+
+    @Autobind
+    dragEndHandler(_: DragEvent) {
+        console.log('drag ended')
+    }
+
     protected configure() {
         this.element.id = this._project.id
+        this.element.addEventListener('dragstart', this.dragStartHandler)
+        this.element.addEventListener('dragend', this.dragEndHandler)
     }
 
     protected renderContents() {
