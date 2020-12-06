@@ -2,12 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f0ab367-9b4c-443b-9a5d-82d06baf78a5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/dist/bundle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/bundle.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/drag-interfaces.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/project-model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/app.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -33,8 +49,14 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="yarn run tsc ./src" />
+    </option>
   </component>
   <component name="RunManager" selected="JavaScript Debug.Run Project">
     <configuration name="Run Project" type="JavascriptDebugType" uri="http://localhost:63342/ts-drag-drop/index.html" useBuiltInWebServerPort="true">
@@ -68,7 +90,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1607271218830</updated>
-      <workItem from="1607271222321" duration="14277000" />
+      <workItem from="1607271222321" duration="15914000" />
     </task>
     <task id="LOCAL-00001" summary="insert project in a list item">
       <created>1607278531505</created>
@@ -133,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607295840831</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="remove console logs">
+      <created>1607296009641</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1607296009641</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,6 +191,11 @@
     <MESSAGE value="add class to projects list when dragging over" />
     <MESSAGE value="add drag drop handler and transfer project id on event" />
     <MESSAGE value="add dragging logic to change projects" />
-    <option name="LAST_COMMIT_MESSAGE" value="add dragging logic to change projects" />
+    <MESSAGE value="remove console logs" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove console logs" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
