@@ -113,6 +113,14 @@ class ProjectState {
 
     private constructor() {}
 
+    moveProject(projectId: string, listType: ProjectStatus) {
+        const projectInstance = this._projects.find(
+            (project) => project.id === projectId
+        )
+        if (projectInstance) projectInstance.status = listType
+        this.callListeners()
+    }
+
     addProject(projectData: ProjectData): void {
         this._projects.push(new Project(...projectData))
         this.callListeners()
@@ -227,7 +235,9 @@ class ProjectsList
 
     @Autobind
     dragDropHandler(event: DragEvent) {
-        console.log(event.dataTransfer!.getData('text/plain'))
+        const projectId = event.dataTransfer!.getData('text/plain')
+        projectState.moveProject(projectId, this.type)
+        this.element.querySelector('ul')!.classList.remove('droppable')
     }
 
     @Autobind

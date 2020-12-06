@@ -1,61 +1,40 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-var Component = /** @class */ (function () {
-    function Component(templateId, targetNodeId, insertAtStart, newElementId) {
+class Component {
+    constructor(templateId, targetNodeId, insertAtStart, newElementId) {
         this.templateEl = document.getElementById(templateId);
         this.targetNode = document.getElementById(targetNodeId);
-        var importedNode = document.importNode(this.templateEl.content, true);
+        const importedNode = document.importNode(this.templateEl.content, true);
         this.element = importedNode.firstElementChild;
         if (newElementId)
             this.element.id = newElementId;
         this.attach(insertAtStart);
     }
-    Component.prototype.attach = function (insertAtStart) {
+    attach(insertAtStart) {
         if (insertAtStart) {
             this.targetNode.insertAdjacentElement('afterbegin', this.element);
         }
         else {
             this.targetNode.insertAdjacentElement('beforeend', this.element);
         }
-    };
-    return Component;
-}());
+    }
+}
 function validate(validation) {
-    var value = validation.value;
+    const { value } = validation;
     if (typeof value === 'string') {
-        var _a = validation, minLength = _a.minLength, maxLength = _a.maxLength;
+        const { minLength, maxLength } = validation;
         if (minLength && minLength > value.length)
             return false;
         if (maxLength && maxLength < value.length)
             return false;
     }
     else {
-        var _b = validation, min = _b.min, max = _b.max;
+        const { min, max } = validation;
         if (min && min > value)
             return false;
         if (max && max < value)
@@ -68,8 +47,8 @@ var ProjectStatus;
     ProjectStatus["ACTIVE"] = "active";
     ProjectStatus["INACTIVE"] = "finished";
 })(ProjectStatus || (ProjectStatus = {}));
-var Project = /** @class */ (function () {
-    function Project(title, description, people, status) {
+class Project {
+    constructor(title, description, people, status) {
         this.status = ProjectStatus.ACTIVE;
         this.title = title;
         this.description = description;
@@ -78,195 +57,187 @@ var Project = /** @class */ (function () {
         if (status)
             this.status = status;
     }
-    return Project;
-}());
-var ProjectState = /** @class */ (function () {
-    function ProjectState() {
+}
+class ProjectState {
+    constructor() {
         this._projects = [];
         this._listeners = [];
     }
-    ProjectState.getInstance = function () {
+    static getInstance() {
         if (this._instance)
             return this._instance;
         this._instance = new ProjectState();
         return this._instance;
-    };
-    ProjectState.prototype.addProject = function (projectData) {
-        this._projects.push(new (Project.bind.apply(Project, __spreadArrays([void 0], projectData)))());
+    }
+    moveProject(projectId, listType) {
+        const projectInstance = this._projects.find((project) => project.id === projectId);
+        if (projectInstance)
+            projectInstance.status = listType;
         this.callListeners();
-    };
-    ProjectState.prototype.getProjects = function (status) {
+    }
+    addProject(projectData) {
+        this._projects.push(new Project(...projectData));
+        this.callListeners();
+    }
+    getProjects(status) {
         switch (status) {
             case ProjectStatus.ACTIVE:
-                return __spreadArrays(this._projects).filter(function (project) { return project.status === ProjectStatus.ACTIVE; });
+                return [...this._projects].filter((project) => project.status === ProjectStatus.ACTIVE);
             case ProjectStatus.INACTIVE:
-                return __spreadArrays(this._projects).filter(function (project) { return project.status === ProjectStatus.INACTIVE; });
+                return [...this._projects].filter((project) => project.status === ProjectStatus.INACTIVE);
             default:
-                return __spreadArrays(this._projects);
+                return [...this._projects];
         }
-    };
-    ProjectState.prototype.callListeners = function () {
-        this._listeners.forEach(function (listener) { return listener(); });
-    };
-    ProjectState.prototype.addListener = function (listener) {
+    }
+    callListeners() {
+        this._listeners.forEach((listener) => listener());
+    }
+    addListener(listener) {
         this._listeners.push(listener);
-    };
-    return ProjectState;
-}());
-var projectState = ProjectState.getInstance();
+    }
+}
+const projectState = ProjectState.getInstance();
 function Autobind(_1, _2, descriptor) {
     return {
         configurable: true,
         enumerable: false,
-        get: function () {
+        get() {
             return descriptor.value.bind(this);
         },
     };
 }
-var ProjectItem = /** @class */ (function (_super) {
-    __extends(ProjectItem, _super);
-    function ProjectItem(hostId, project) {
-        var _this = _super.call(this, 'single-project', hostId, false) || this;
-        _this._project = project;
-        _this.configure();
-        _this.renderContents();
-        return _this;
+class ProjectItem extends Component {
+    constructor(hostId, project) {
+        super('single-project', hostId, false);
+        this._project = project;
+        this.configure();
+        this.renderContents();
     }
-    Object.defineProperty(ProjectItem.prototype, "projectMembers", {
-        get: function () {
-            switch (this._project.people) {
-                case 1:
-                    return '1 member';
-                default:
-                    return this._project.people + " members";
-            }
-        },
-        enumerable: false,
-        configurable: true
-    });
-    ProjectItem.prototype.dragStartHandler = function (event) {
+    get projectMembers() {
+        switch (this._project.people) {
+            case 1:
+                return '1 member';
+            default:
+                return `${this._project.people} members`;
+        }
+    }
+    dragStartHandler(event) {
         event.dataTransfer.setData('text/plain', this._project.id);
         event.dataTransfer.effectAllowed = 'move';
-    };
-    ProjectItem.prototype.dragEndHandler = function (_) {
+    }
+    dragEndHandler(_) {
         console.log('drag ended');
-    };
-    ProjectItem.prototype.configure = function () {
+    }
+    configure() {
         this.element.id = this._project.id;
         this.element.addEventListener('dragstart', this.dragStartHandler);
         this.element.addEventListener('dragend', this.dragEndHandler);
-    };
-    ProjectItem.prototype.renderContents = function () {
+    }
+    renderContents() {
         this.element.querySelector('h2').textContent = this._project.title;
         this.element.querySelector('h3').textContent = this.projectMembers;
         this.element.querySelector('p').textContent = this._project.description;
-    };
-    __decorate([
-        Autobind
-    ], ProjectItem.prototype, "dragStartHandler", null);
-    __decorate([
-        Autobind
-    ], ProjectItem.prototype, "dragEndHandler", null);
-    return ProjectItem;
-}(Component));
-var ProjectsList = /** @class */ (function (_super) {
-    __extends(ProjectsList, _super);
-    function ProjectsList(type) {
-        var _this = _super.call(this, 'project-list', 'app', false, type + "-projects") || this;
-        _this.type = type;
-        _this.projects = [];
-        _this.configure();
-        _this.renderContents();
-        return _this;
     }
-    ProjectsList.prototype.dragOverHandler = function (event) {
+}
+__decorate([
+    Autobind
+], ProjectItem.prototype, "dragStartHandler", null);
+__decorate([
+    Autobind
+], ProjectItem.prototype, "dragEndHandler", null);
+class ProjectsList extends Component {
+    constructor(type) {
+        super('project-list', 'app', false, `${type}-projects`);
+        this.type = type;
+        this.projects = [];
+        this.configure();
+        this.renderContents();
+    }
+    dragOverHandler(event) {
         if (event.dataTransfer &&
             event.dataTransfer.types[0] === 'text/plain') {
             event.preventDefault();
             this.element.querySelector('ul').classList.add('droppable');
         }
-    };
-    ProjectsList.prototype.dragDropHandler = function (event) {
-        console.log(event.dataTransfer.getData('text/plain'));
-    };
-    ProjectsList.prototype.dragLeaveHandler = function (event) {
+    }
+    dragDropHandler(event) {
+        const projectId = event.dataTransfer.getData('text/plain');
+        projectState.moveProject(projectId, this.type);
+        this.element.querySelector('ul').classList.remove('droppable');
+    }
+    dragLeaveHandler(event) {
         if (event.dataTransfer &&
             event.dataTransfer.types[0] === 'text/plain') {
             this.element.querySelector('ul').classList.remove('droppable');
         }
-    };
-    ProjectsList.prototype.renderProjects = function () {
-        var _this = this;
-        var list = document
-            .getElementById(this.type + "-projects")
+    }
+    renderProjects() {
+        const list = document
+            .getElementById(`${this.type}-projects`)
             .querySelector('ul');
         list.innerHTML = '';
-        this.projects.forEach(function (project) {
-            new ProjectItem(_this.type + "-projects-list", project);
+        this.projects.forEach((project) => {
+            new ProjectItem(`${this.type}-projects-list`, project);
         });
-    };
-    ProjectsList.prototype.configure = function () {
-        var _this = this;
-        projectState.addListener(function () {
-            _this.projects = projectState.getProjects(_this.type);
-            _this.renderProjects();
+    }
+    configure() {
+        projectState.addListener(() => {
+            this.projects = projectState.getProjects(this.type);
+            this.renderProjects();
         });
-        this.element.querySelector('ul').id = this.type + "-projects-list";
+        this.element.querySelector('ul').id = `${this.type}-projects-list`;
         this.element.addEventListener('dragover', this.dragOverHandler);
         this.element.addEventListener('dragleave', this.dragLeaveHandler);
         this.element.addEventListener('drop', this.dragDropHandler);
-    };
-    ProjectsList.prototype.renderContents = function () {
-        this.element.querySelector('h2').textContent = this.type.toUpperCase() + " PROJECTS";
-    };
-    __decorate([
-        Autobind
-    ], ProjectsList.prototype, "dragOverHandler", null);
-    __decorate([
-        Autobind
-    ], ProjectsList.prototype, "dragDropHandler", null);
-    __decorate([
-        Autobind
-    ], ProjectsList.prototype, "dragLeaveHandler", null);
-    return ProjectsList;
-}(Component));
-var ProjectsInput = /** @class */ (function (_super) {
-    __extends(ProjectsInput, _super);
-    function ProjectsInput() {
-        var _this = _super.call(this, 'project-input', 'app', true, 'user-input') || this;
-        _this.titleInput = _this.element.querySelector('#title');
-        _this.descriptionInput = _this.element.querySelector('#description');
-        _this.peopleInput = _this.element.querySelector('#people');
-        _this.configure();
-        _this.renderContents();
-        return _this;
     }
-    ProjectsInput.prototype.submitHandler = function (event) {
+    renderContents() {
+        this.element.querySelector('h2').textContent = `${this.type.toUpperCase()} PROJECTS`;
+    }
+}
+__decorate([
+    Autobind
+], ProjectsList.prototype, "dragOverHandler", null);
+__decorate([
+    Autobind
+], ProjectsList.prototype, "dragDropHandler", null);
+__decorate([
+    Autobind
+], ProjectsList.prototype, "dragLeaveHandler", null);
+class ProjectsInput extends Component {
+    constructor() {
+        super('project-input', 'app', true, 'user-input');
+        this.titleInput = this.element.querySelector('#title');
+        this.descriptionInput = this.element.querySelector('#description');
+        this.peopleInput = this.element.querySelector('#people');
+        this.configure();
+        this.renderContents();
+    }
+    submitHandler(event) {
         event.preventDefault();
-        var inputValues = this.getInputValues();
+        const inputValues = this.getInputValues();
         if (inputValues) {
             projectState.addProject(inputValues);
             this.clearInputValues();
         }
-    };
-    ProjectsInput.prototype.clearInputValues = function () {
+    }
+    clearInputValues() {
         this.titleInput.value = '';
         this.descriptionInput.value = '';
         this.peopleInput.value = '';
-    };
-    ProjectsInput.prototype.getInputValues = function () {
-        var titleInputValue = this.titleInput.value;
-        var descriptionInputValue = this.descriptionInput.value;
-        var peopleInputValue = this.peopleInput.value;
-        var titleInputValidation = {
+    }
+    getInputValues() {
+        const titleInputValue = this.titleInput.value;
+        const descriptionInputValue = this.descriptionInput.value;
+        const peopleInputValue = this.peopleInput.value;
+        const titleInputValidation = {
             value: titleInputValue,
             minLength: 1,
         };
-        var descriptionInputValidation = {
+        const descriptionInputValidation = {
             value: descriptionInputValue,
             minLength: 5,
         };
-        var peopleInputValidation = {
+        const peopleInputValidation = {
             value: +peopleInputValue,
             min: 1,
             max: 10,
@@ -278,16 +249,15 @@ var ProjectsInput = /** @class */ (function (_super) {
             return;
         }
         return [titleInputValue, descriptionInputValue, +peopleInputValue];
-    };
-    ProjectsInput.prototype.renderContents = function () { };
-    ProjectsInput.prototype.configure = function () {
+    }
+    renderContents() { }
+    configure() {
         this.element.addEventListener('submit', this.submitHandler);
-    };
-    __decorate([
-        Autobind
-    ], ProjectsInput.prototype, "submitHandler", null);
-    return ProjectsInput;
-}(Component));
+    }
+}
+__decorate([
+    Autobind
+], ProjectsInput.prototype, "submitHandler", null);
 new ProjectsInput();
 new ProjectsList(ProjectStatus.ACTIVE);
 new ProjectsList(ProjectStatus.INACTIVE);
