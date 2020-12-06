@@ -202,13 +202,28 @@ class ProjectItem
     }
 }
 
-class ProjectsList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectsList
+    extends Component<HTMLDivElement, HTMLElement>
+    implements DragTarget {
     projects: Project[] = []
 
     constructor(private type: ProjectStatus) {
         super('project-list', 'app', false, `${type}-projects`)
         this.configure()
         this.renderContents()
+    }
+
+    @Autobind
+    dragOverHandler(_: DragEvent) {
+        this.element.querySelector('ul')!.classList.add('droppable')
+    }
+
+    @Autobind
+    dragDropHandler(_: DragEvent) {}
+
+    @Autobind
+    dragLeaveHandler(_: DragEvent) {
+        this.element.querySelector('ul')!.classList.remove('droppable')
     }
 
     private renderProjects() {
@@ -230,6 +245,8 @@ class ProjectsList extends Component<HTMLDivElement, HTMLElement> {
         })
 
         this.element.querySelector('ul')!.id = `${this.type}-projects-list`
+        this.element.addEventListener('dragover', this.dragOverHandler)
+        this.element.addEventListener('dragleave', this.dragLeaveHandler)
     }
 
     protected renderContents() {

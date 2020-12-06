@@ -178,6 +178,13 @@ var ProjectsList = /** @class */ (function (_super) {
         _this.renderContents();
         return _this;
     }
+    ProjectsList.prototype.dragOverHandler = function (_) {
+        this.element.querySelector('ul').classList.add('droppable');
+    };
+    ProjectsList.prototype.dragDropHandler = function (_) { };
+    ProjectsList.prototype.dragLeaveHandler = function (_) {
+        this.element.querySelector('ul').classList.remove('droppable');
+    };
     ProjectsList.prototype.renderProjects = function () {
         var _this = this;
         var list = document
@@ -195,10 +202,21 @@ var ProjectsList = /** @class */ (function (_super) {
             _this.renderProjects();
         });
         this.element.querySelector('ul').id = this.type + "-projects-list";
+        this.element.addEventListener('dragover', this.dragOverHandler);
+        this.element.addEventListener('dragleave', this.dragLeaveHandler);
     };
     ProjectsList.prototype.renderContents = function () {
         this.element.querySelector('h2').textContent = this.type.toUpperCase() + " PROJECTS";
     };
+    __decorate([
+        Autobind
+    ], ProjectsList.prototype, "dragOverHandler", null);
+    __decorate([
+        Autobind
+    ], ProjectsList.prototype, "dragDropHandler", null);
+    __decorate([
+        Autobind
+    ], ProjectsList.prototype, "dragLeaveHandler", null);
     return ProjectsList;
 }(Component));
 var ProjectsInput = /** @class */ (function (_super) {
