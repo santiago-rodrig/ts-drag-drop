@@ -26,12 +26,13 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 var Component = /** @class */ (function () {
-    function Component(templateId, targetNodeId, newElementId, insertAtStart) {
+    function Component(templateId, targetNodeId, insertAtStart, newElementId) {
         this.templateEl = document.getElementById(templateId);
         this.targetNode = document.getElementById(targetNodeId);
         var importedNode = document.importNode(this.templateEl.content, true);
         this.element = importedNode.firstElementChild;
-        this.element.id = newElementId;
+        if (newElementId)
+            this.element.id = newElementId;
         this.attach(insertAtStart);
     }
     Component.prototype.attach = function (insertAtStart) {
@@ -122,10 +123,29 @@ function Autobind(_1, _2, descriptor) {
         },
     };
 }
+var ProjectItem = /** @class */ (function (_super) {
+    __extends(ProjectItem, _super);
+    function ProjectItem(hostId, project) {
+        var _this = _super.call(this, 'single-project', hostId, false) || this;
+        _this.project = project;
+        _this.configure();
+        _this.renderContents();
+        return _this;
+    }
+    ProjectItem.prototype.configure = function () {
+        this.element.id = this.project.id;
+    };
+    ProjectItem.prototype.renderContents = function () {
+        this.element.querySelector('h2').textContent = this.project.title;
+        this.element.querySelector('h3').textContent = this.project.people.toString();
+        this.element.querySelector('p').textContent = this.project.description;
+    };
+    return ProjectItem;
+}(Component));
 var ProjectsList = /** @class */ (function (_super) {
     __extends(ProjectsList, _super);
     function ProjectsList(type) {
-        var _this = _super.call(this, 'project-list', 'app', type + "-projects", false) || this;
+        var _this = _super.call(this, 'project-list', 'app', false, type + "-projects") || this;
         _this.type = type;
         _this.projects = [];
         _this.configure();
@@ -133,12 +153,13 @@ var ProjectsList = /** @class */ (function (_super) {
         return _this;
     }
     ProjectsList.prototype.renderProjects = function () {
-        var list = document.getElementById(this.type + "-projects").querySelector('ul');
+        var _this = this;
+        var list = document
+            .getElementById(this.type + "-projects")
+            .querySelector('ul');
         list.innerHTML = '';
         this.projects.forEach(function (project) {
-            var listItem = document.createElement('li');
-            listItem.textContent = project.title;
-            list.append(listItem);
+            new ProjectItem(_this.type + "-projects-list", project);
         });
     };
     ProjectsList.prototype.configure = function () {
@@ -147,17 +168,17 @@ var ProjectsList = /** @class */ (function (_super) {
             _this.projects = projectState.getProjects(_this.type);
             _this.renderProjects();
         });
+        this.element.querySelector('ul').id = this.type + "-projects-list";
     };
     ProjectsList.prototype.renderContents = function () {
         this.element.querySelector('h2').textContent = this.type.toUpperCase() + " PROJECTS";
-        this.element.querySelector('ul').id = this.type + "-projects";
     };
     return ProjectsList;
 }(Component));
 var ProjectsInput = /** @class */ (function (_super) {
     __extends(ProjectsInput, _super);
     function ProjectsInput() {
-        var _this = _super.call(this, 'project-input', 'app', 'user-input', true) || this;
+        var _this = _super.call(this, 'project-input', 'app', true, 'user-input') || this;
         _this.titleInput = _this.element.querySelector('#title');
         _this.descriptionInput = _this.element.querySelector('#description');
         _this.peopleInput = _this.element.querySelector('#people');

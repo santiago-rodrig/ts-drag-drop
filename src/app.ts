@@ -21,8 +21,8 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
     protected constructor(
         templateId: string,
         targetNodeId: string,
-        newElementId: string,
-        insertAtStart: boolean
+        insertAtStart: boolean,
+        newElementId?: string,
     ) {
         this.templateEl = document.getElementById(
             templateId
@@ -31,7 +31,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
         this.targetNode = document.getElementById(targetNodeId)! as T
         const importedNode = document.importNode(this.templateEl.content, true)
         this.element = importedNode.firstElementChild! as U
-        this.element.id = newElementId
+        if (newElementId) this.element.id = newElementId
         this.attach(insertAtStart)
     }
 
@@ -147,11 +147,32 @@ function Autobind(
     } as PropertyDescriptor
 }
 
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+    private project: Project
+
+    constructor(hostId: string, project: Project) {
+        super('single-project', hostId, false)
+        this.project = project
+        this.configure()
+        this.renderContents()
+    }
+
+    protected configure() {
+        this.element.id = this.project.id
+    }
+
+    protected renderContents() {
+        this.element.querySelector('h2')!.textContent = this.project.title
+        this.element.querySelector('h3')!.textContent = this.project.people.toString()
+        this.element.querySelector('p')!.textContent = this.project.description
+    }
+}
+
 class ProjectsList extends Component<HTMLDivElement, HTMLElement> {
     projects: Project[] = []
 
     constructor(private type: ProjectStatus) {
-        super('project-list', 'app', `${type}-projects`, false)
+        super('project-list', 'app', false, `${type}-projects`)
         this.configure()
         this.renderContents()
     }
@@ -164,9 +185,7 @@ class ProjectsList extends Component<HTMLDivElement, HTMLElement> {
         list.innerHTML = ''
 
         this.projects.forEach((project) => {
-            const listItem = document.createElement('li')
-            listItem.textContent = project.title
-            list.append(listItem)
+            new ProjectItem(`${this.type}-projects-list`, project)
         })
     }
 
@@ -175,14 +194,14 @@ class ProjectsList extends Component<HTMLDivElement, HTMLElement> {
             this.projects = projectState.getProjects(this.type)
             this.renderProjects()
         })
+
+        this.element.querySelector('ul')!.id = `${this.type}-projects-list`
     }
 
     protected renderContents() {
         this.element.querySelector(
             'h2'
         )!.textContent = `${this.type.toUpperCase()} PROJECTS`
-
-        this.element.querySelector('ul')!.id = `${this.type}-projects`
     }
 }
 
@@ -192,7 +211,7 @@ class ProjectsInput extends Component<HTMLDivElement, HTMLFormElement> {
     peopleInput: HTMLInputElement
 
     constructor() {
-        super('project-input', 'app', 'user-input', true)
+        super('project-input', 'app', true, 'user-input')
 
         this.titleInput = this.element.querySelector(
             '#title'
