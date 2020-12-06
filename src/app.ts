@@ -148,23 +148,32 @@ function Autobind(
 }
 
 class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
-    private project: Project
+    private _project: Project
+
+    get projectMembers() {
+        switch (this._project.people) {
+            case 1:
+                return '1 member'
+            default:
+                return `${this._project.people} members`
+        }
+    }
 
     constructor(hostId: string, project: Project) {
         super('single-project', hostId, false)
-        this.project = project
+        this._project = project
         this.configure()
         this.renderContents()
     }
 
     protected configure() {
-        this.element.id = this.project.id
+        this.element.id = this._project.id
     }
 
     protected renderContents() {
-        this.element.querySelector('h2')!.textContent = this.project.title
-        this.element.querySelector('h3')!.textContent = this.project.people.toString()
-        this.element.querySelector('p')!.textContent = this.project.description
+        this.element.querySelector('h2')!.textContent = this._project.title
+        this.element.querySelector('h3')!.textContent = this.projectMembers
+        this.element.querySelector('p')!.textContent = this._project.description
     }
 }
 

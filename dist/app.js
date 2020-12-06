@@ -127,18 +127,30 @@ var ProjectItem = /** @class */ (function (_super) {
     __extends(ProjectItem, _super);
     function ProjectItem(hostId, project) {
         var _this = _super.call(this, 'single-project', hostId, false) || this;
-        _this.project = project;
+        _this._project = project;
         _this.configure();
         _this.renderContents();
         return _this;
     }
+    Object.defineProperty(ProjectItem.prototype, "projectMembers", {
+        get: function () {
+            switch (this._project.people) {
+                case 1:
+                    return '1 member';
+                default:
+                    return this._project.people + " members";
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
     ProjectItem.prototype.configure = function () {
-        this.element.id = this.project.id;
+        this.element.id = this._project.id;
     };
     ProjectItem.prototype.renderContents = function () {
-        this.element.querySelector('h2').textContent = this.project.title;
-        this.element.querySelector('h3').textContent = this.project.people.toString();
-        this.element.querySelector('p').textContent = this.project.description;
+        this.element.querySelector('h2').textContent = this._project.title;
+        this.element.querySelector('h3').textContent = this.projectMembers;
+        this.element.querySelector('p').textContent = this._project.description;
     };
     return ProjectItem;
 }(Component));
