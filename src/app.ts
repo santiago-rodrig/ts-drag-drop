@@ -11,21 +11,52 @@ interface ValidatableString {
 }
 
 type Validatable = ValidatableNumber | ValidatableString
+type ProjectData = [string, string, number]
+
+abstract class Component<T extends HTMLElement, U extends HTMLElement> {
+    templateEl: HTMLTemplateElement
+    targetNode: T
+    element: U
+
+    protected constructor(
+        templateId: string,
+        targetNodeId: string,
+        newElementId: string,
+        insertAtStart: boolean
+    ) {
+        this.templateEl = document.getElementById(
+            templateId
+        )! as HTMLTemplateElement
+
+        this.targetNode = document.getElementById(targetNodeId)! as T
+        const importedNode = document.importNode(this.templateEl.content, true)
+        this.element = importedNode.firstElementChild! as U
+        this.element.id = newElementId
+        this.attach(insertAtStart)
+    }
+
+    private attach(insertAtStart: boolean) {
+        if (insertAtStart) {
+            this.targetNode.insertAdjacentElement('afterbegin', this.element)
+        } else {
+            this.targetNode.insertAdjacentElement('beforeend', this.element)
+        }
+    }
+
+    protected abstract configure(): void
+    protected abstract renderContents(): void
+}
 
 function validate(validation: Validatable): boolean {
     const { value } = validation
 
     if (typeof value === 'string') {
         const { minLength, maxLength } = validation as ValidatableString
-
         if (minLength && minLength > value.length) return false
-
         if (maxLength && maxLength < value.length) return false
     } else {
         const { min, max } = validation as ValidatableNumber
-
         if (min && min > value) return false
-
         if (max && max < value) return false
     }
 
@@ -36,8 +67,6 @@ enum ProjectStatus {
     ACTIVE = 'active',
     INACTIVE = 'finished',
 }
-
-type ProjectData = [string, string, number]
 
 class Project {
     id: string
@@ -56,7 +85,6 @@ class Project {
         this.description = description
         this.people = people
         this.id = Math.random().toString()
-
         if (status) this.status = status
     }
 }
@@ -65,7 +93,6 @@ class ProjectState {
     private _projects: Project[] = []
     private _listeners: Function[] = []
     private static _instance: ProjectState
-
     static getInstance() {
         if (this._instance) return this._instance
 
@@ -120,111 +147,72 @@ function Autobind(
     } as PropertyDescriptor
 }
 
-class ProjectsList {
-    templateEl: HTMLTemplateElement
-    targetNode: HTMLDivElement
-    element: HTMLElement
+class ProjectsList extends Component<HTMLDivElement, HTMLElement> {
     projects: Project[] = []
 
     constructor(private type: ProjectStatus) {
-        this.templateEl = document.getElementById(
-            'project-list'
-        )! as HTMLTemplateElement
-
-        this.targetNode = document.getElementById('app')! as HTMLDivElement
-
-        const importedNode = document.importNode(this.templateEl.content, true)
-
-        this.element = importedNode.firstElementChild! as HTMLElement
-        this.element.id = `${this.type}-projects`
-
+        super('project-list', 'app', `${type}-projects`, false)
+        this.configure()
         this.renderContents()
-
-        projectState.addListener(() => {
-            this.projects = projectState.getProjects(this.type)
-            this.renderProjects()
-        })
-
-        projectState.addListener(function () {}.bind(this))
-
-        this.attach()
     }
 
     private renderProjects() {
-        const list = document.getElementById(
-            `${this.type}-projects-list`
-        )! as HTMLUListElement
+        const list = document
+            .getElementById(`${this.type}-projects`)!
+            .querySelector('ul')! as HTMLUListElement
 
         list.innerHTML = ''
 
         this.projects.forEach((project) => {
             const listItem = document.createElement('li')
-
             listItem.textContent = project.title
-
             list.append(listItem)
         })
     }
 
-    private attach() {
-        this.targetNode.insertAdjacentElement('beforeend', this.element)
+    protected configure() {
+        projectState.addListener(() => {
+            this.projects = projectState.getProjects(this.type)
+            this.renderProjects()
+        })
     }
 
-    private renderContents() {
+    protected renderContents() {
         this.element.querySelector(
             'h2'
         )!.textContent = `${this.type.toUpperCase()} PROJECTS`
 
-        this.element.querySelector('ul')!.id = `${this.type}-projects-list`
+        this.element.querySelector('ul')!.id = `${this.type}-projects`
     }
 }
 
-class ProjectsInput {
-    templateEl: HTMLTemplateElement
-    targetNode: HTMLDivElement
-    formEl: HTMLFormElement
+class ProjectsInput extends Component<HTMLDivElement, HTMLFormElement> {
     titleInput: HTMLInputElement
     descriptionInput: HTMLTextAreaElement
     peopleInput: HTMLInputElement
-    private _templateContents: DocumentFragment
 
     constructor() {
-        this.templateEl = document.getElementById(
-            'project-input'
-        )! as HTMLTemplateElement
+        super('project-input', 'app', 'user-input', true)
 
-        this.targetNode = document.getElementById('app')! as HTMLDivElement
-
-        this._templateContents = document.importNode(
-            this.templateEl.content,
-            true
-        )
-
-        this.formEl = this._templateContents
-            .firstElementChild! as HTMLFormElement
-
-        this.formEl.id = 'user-input'
-
-        this.titleInput = this.formEl.querySelector(
+        this.titleInput = this.element.querySelector(
             '#title'
         )! as HTMLInputElement
 
-        this.descriptionInput = this.formEl.querySelector(
+        this.descriptionInput = this.element.querySelector(
             '#description'
         )! as HTMLTextAreaElement
 
-        this.peopleInput = this.formEl.querySelector(
+        this.peopleInput = this.element.querySelector(
             '#people'
         )! as HTMLInputElement
 
         this.configure()
-        this.attach()
+        this.renderContents()
     }
 
     @Autobind
     private submitHandler(event: Event) {
         event.preventDefault()
-
         const inputValues = this.getInputValues()
 
         if (inputValues) {
@@ -266,19 +254,16 @@ class ProjectsInput {
             !validate(peopleInputValidation)
         ) {
             alert('Invalid input values!')
-
             return
         }
 
         return [titleInputValue, descriptionInputValue, +peopleInputValue]
     }
 
-    private configure() {
-        this.formEl.addEventListener('submit', this.submitHandler)
-    }
+    protected renderContents() {}
 
-    private attach() {
-        this.targetNode.insertAdjacentElement('afterbegin', this.formEl)
+    protected configure() {
+        this.element.addEventListener('submit', this.submitHandler)
     }
 }
 
