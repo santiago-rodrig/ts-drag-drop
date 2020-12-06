@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8f0ab367-9b4c-443b-9a5d-82d06baf78a5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/app.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/app.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +71,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1607271218830</updated>
-      <workItem from="1607271222321" duration="11937000" />
+      <workItem from="1607271222321" duration="13004000" />
     </task>
     <task id="LOCAL-00001" summary="insert project in a list item">
       <created>1607278531505</created>
@@ -113,7 +115,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607291133656</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add class to projects list when dragging over">
+      <created>1607292050519</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1607292050519</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,6 +148,7 @@
     <MESSAGE value="define project item class for rendering" />
     <MESSAGE value="display project people using a getter" />
     <MESSAGE value="project item is draggable now" />
-    <option name="LAST_COMMIT_MESSAGE" value="project item is draggable now" />
+    <MESSAGE value="add class to projects list when dragging over" />
+    <option name="LAST_COMMIT_MESSAGE" value="add class to projects list when dragging over" />
   </component>
 </project>

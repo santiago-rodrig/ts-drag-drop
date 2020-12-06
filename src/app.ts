@@ -181,7 +181,8 @@ class ProjectItem
 
     @Autobind
     dragStartHandler(event: DragEvent) {
-        console.log(event)
+        event.dataTransfer!.setData('text/plain', this._project.id)
+        event.dataTransfer!.effectAllowed = 'move'
     }
 
     @Autobind
@@ -214,16 +215,29 @@ class ProjectsList
     }
 
     @Autobind
-    dragOverHandler(_: DragEvent) {
-        this.element.querySelector('ul')!.classList.add('droppable')
+    dragOverHandler(event: DragEvent) {
+        if (
+            event.dataTransfer &&
+            event.dataTransfer.types[0] === 'text/plain'
+        ) {
+            event.preventDefault()
+            this.element.querySelector('ul')!.classList.add('droppable')
+        }
     }
 
     @Autobind
-    dragDropHandler(_: DragEvent) {}
+    dragDropHandler(event: DragEvent) {
+        console.log(event.dataTransfer!.getData('text/plain'))
+    }
 
     @Autobind
-    dragLeaveHandler(_: DragEvent) {
-        this.element.querySelector('ul')!.classList.remove('droppable')
+    dragLeaveHandler(event: DragEvent) {
+        if (
+            event.dataTransfer &&
+            event.dataTransfer.types[0] === 'text/plain'
+        ) {
+            this.element.querySelector('ul')!.classList.remove('droppable')
+        }
     }
 
     private renderProjects() {
@@ -247,6 +261,7 @@ class ProjectsList
         this.element.querySelector('ul')!.id = `${this.type}-projects-list`
         this.element.addEventListener('dragover', this.dragOverHandler)
         this.element.addEventListener('dragleave', this.dragLeaveHandler)
+        this.element.addEventListener('drop', this.dragDropHandler)
     }
 
     protected renderContents() {

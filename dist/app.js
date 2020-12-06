@@ -145,7 +145,8 @@ var ProjectItem = /** @class */ (function (_super) {
         configurable: true
     });
     ProjectItem.prototype.dragStartHandler = function (event) {
-        console.log(event);
+        event.dataTransfer.setData('text/plain', this._project.id);
+        event.dataTransfer.effectAllowed = 'move';
     };
     ProjectItem.prototype.dragEndHandler = function (_) {
         console.log('drag ended');
@@ -178,12 +179,21 @@ var ProjectsList = /** @class */ (function (_super) {
         _this.renderContents();
         return _this;
     }
-    ProjectsList.prototype.dragOverHandler = function (_) {
-        this.element.querySelector('ul').classList.add('droppable');
+    ProjectsList.prototype.dragOverHandler = function (event) {
+        if (event.dataTransfer &&
+            event.dataTransfer.types[0] === 'text/plain') {
+            event.preventDefault();
+            this.element.querySelector('ul').classList.add('droppable');
+        }
     };
-    ProjectsList.prototype.dragDropHandler = function (_) { };
-    ProjectsList.prototype.dragLeaveHandler = function (_) {
-        this.element.querySelector('ul').classList.remove('droppable');
+    ProjectsList.prototype.dragDropHandler = function (event) {
+        console.log(event.dataTransfer.getData('text/plain'));
+    };
+    ProjectsList.prototype.dragLeaveHandler = function (event) {
+        if (event.dataTransfer &&
+            event.dataTransfer.types[0] === 'text/plain') {
+            this.element.querySelector('ul').classList.remove('droppable');
+        }
     };
     ProjectsList.prototype.renderProjects = function () {
         var _this = this;
@@ -204,6 +214,7 @@ var ProjectsList = /** @class */ (function (_super) {
         this.element.querySelector('ul').id = this.type + "-projects-list";
         this.element.addEventListener('dragover', this.dragOverHandler);
         this.element.addEventListener('dragleave', this.dragLeaveHandler);
+        this.element.addEventListener('drop', this.dragDropHandler);
     };
     ProjectsList.prototype.renderContents = function () {
         this.element.querySelector('h2').textContent = this.type.toUpperCase() + " PROJECTS";
