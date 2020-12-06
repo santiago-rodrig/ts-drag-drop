@@ -40,6 +40,7 @@ enum ProjectStatus {
 type ProjectData = [string, string, number]
 
 class Project {
+    id: string
     title: string
     description: string
     people: number
@@ -54,6 +55,7 @@ class Project {
         this.title = title
         this.description = description
         this.people = people
+        this.id = Math.random().toString()
 
         if (status) this.status = status
     }
@@ -153,7 +155,13 @@ class ProjectsList {
             `${this.type}-projects-list`
         )! as HTMLUListElement
 
-        this.projects.forEach((project) => (list.textContent += project.title))
+        this.projects.forEach((project) => {
+            const listItem = document.createElement('li')
+
+            listItem.textContent = project.title
+
+            list.append(listItem)
+        })
     }
 
     private attach() {
@@ -272,6 +280,6 @@ class ProjectsInput {
     }
 }
 
-const projectInput = new ProjectsInput()
-const activeProjectsList = new ProjectsList(ProjectStatus.ACTIVE)
-const inactiveProjectsList = new ProjectsList(ProjectStatus.INACTIVE)
+new ProjectsInput()
+new ProjectsList(ProjectStatus.ACTIVE)
+new ProjectsList(ProjectStatus.INACTIVE)

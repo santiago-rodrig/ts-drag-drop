@@ -41,6 +41,7 @@ var Project = /** @class */ (function () {
         this.title = title;
         this.description = description;
         this.people = people;
+        this.id = Math.random().toString();
         if (status)
             this.status = status;
     }
@@ -109,7 +110,11 @@ var ProjectsList = /** @class */ (function () {
     }
     ProjectsList.prototype.renderProjects = function () {
         var list = document.getElementById(this.type + "-projects-list");
-        this.projects.forEach(function (project) { return (list.textContent += project.title); });
+        this.projects.forEach(function (project) {
+            var listItem = document.createElement('li');
+            listItem.textContent = project.title;
+            list.append(listItem);
+        });
     };
     ProjectsList.prototype.attach = function () {
         this.targetNode.insertAdjacentElement('beforeend', this.element);
@@ -183,7 +188,7 @@ var ProjectsInput = /** @class */ (function () {
     ], ProjectsInput.prototype, "submitHandler", null);
     return ProjectsInput;
 }());
-var projectInput = new ProjectsInput();
-var activeProjectsList = new ProjectsList(ProjectStatus.ACTIVE);
-var inactiveProjectsList = new ProjectsList(ProjectStatus.INACTIVE);
+new ProjectsInput();
+new ProjectsList(ProjectStatus.ACTIVE);
+new ProjectsList(ProjectStatus.INACTIVE);
 //# sourceMappingURL=app.js.map
