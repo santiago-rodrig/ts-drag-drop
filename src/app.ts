@@ -194,9 +194,7 @@ class ProjectItem
     }
 
     @Autobind
-    dragEndHandler(_: DragEvent) {
-        console.log('drag ended')
-    }
+    dragEndHandler(_: DragEvent) {}
 
     protected configure() {
         this.element.id = this._project.id
