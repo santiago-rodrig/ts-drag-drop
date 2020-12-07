@@ -7,30 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var App;
 (function (App) {
-    let ProjectStatus;
-    (function (ProjectStatus) {
-        ProjectStatus["ACTIVE"] = "active";
-        ProjectStatus["INACTIVE"] = "finished";
-    })(ProjectStatus = App.ProjectStatus || (App.ProjectStatus = {}));
-})(App || (App = {}));
-/// <reference path="../enums.ts" />
-var App;
-(function (App) {
-    class Project {
-        constructor(title, description, people, status) {
-            this.status = App.ProjectStatus.ACTIVE;
-            this.title = title;
-            this.description = description;
-            this.people = people;
-            this.id = Math.random().toString();
-            if (status)
-                this.status = status;
-        }
-    }
-    App.Project = Project;
-})(App || (App = {}));
-var App;
-(function (App) {
     class Component {
         constructor(templateId, targetNodeId, insertAtStart, newElementId) {
             this.templateEl = document.getElementById(templateId);
@@ -195,52 +171,6 @@ var App;
     App.ProjectsInput = ProjectsInput;
 })(App || (App = {}));
 /// <reference path="base.ts" />
-/// <reference path="../decorators.ts" />
-/// <reference path="../interfaces.ts" />
-/// <reference path="../models/project.ts" />
-var App;
-(function (App) {
-    class ProjectItem extends App.Component {
-        constructor(hostId, project) {
-            super('single-project', hostId, false);
-            this._project = project;
-            this.configure();
-            this.renderContents();
-        }
-        get projectMembers() {
-            switch (this._project.people) {
-                case 1:
-                    return '1 member';
-                default:
-                    return `${this._project.people} members`;
-            }
-        }
-        dragStartHandler(event) {
-            event.dataTransfer.setData('text/plain', this._project.id);
-            event.dataTransfer.effectAllowed = 'move';
-        }
-        dragEndHandler(_) {
-        }
-        configure() {
-            this.element.id = this._project.id;
-            this.element.addEventListener('dragstart', this.dragStartHandler);
-            this.element.addEventListener('dragend', this.dragEndHandler);
-        }
-        renderContents() {
-            this.element.querySelector('h2').textContent = this._project.title;
-            this.element.querySelector('h3').textContent = this.projectMembers;
-            this.element.querySelector('p').textContent = this._project.description;
-        }
-    }
-    __decorate([
-        App.Autobind
-    ], ProjectItem.prototype, "dragStartHandler", null);
-    __decorate([
-        App.Autobind
-    ], ProjectItem.prototype, "dragEndHandler", null);
-    App.ProjectItem = ProjectItem;
-})(App || (App = {}));
-/// <reference path="base.ts" />
 /// <reference path="../state/projects.ts" />
 /// <reference path="../interfaces.ts" />
 /// <reference path="../decorators.ts" />
@@ -306,15 +236,83 @@ var App;
     ], ProjectsList.prototype, "dragLeaveHandler", null);
     App.ProjectsList = ProjectsList;
 })(App || (App = {}));
-/// <reference path="interfaces.ts" />
-/// <reference path="models/project.ts" />
+var App;
+(function (App) {
+    let ProjectStatus;
+    (function (ProjectStatus) {
+        ProjectStatus["ACTIVE"] = "active";
+        ProjectStatus["INACTIVE"] = "finished";
+    })(ProjectStatus = App.ProjectStatus || (App.ProjectStatus = {}));
+})(App || (App = {}));
 /// <reference path="components/project-input.ts" />
-/// <reference path="components/project-item.ts" />
 /// <reference path="components/project-list.ts" />
+/// <reference path="enums.ts" />
 var App;
 (function (App) {
     new App.ProjectsInput();
     new App.ProjectsList(App.ProjectStatus.ACTIVE);
     new App.ProjectsList(App.ProjectStatus.INACTIVE);
+})(App || (App = {}));
+/// <reference path="../enums.ts" />
+var App;
+(function (App) {
+    class Project {
+        constructor(title, description, people, status) {
+            this.status = App.ProjectStatus.ACTIVE;
+            this.title = title;
+            this.description = description;
+            this.people = people;
+            this.id = Math.random().toString();
+            if (status)
+                this.status = status;
+        }
+    }
+    App.Project = Project;
+})(App || (App = {}));
+/// <reference path="base.ts" />
+/// <reference path="../decorators.ts" />
+/// <reference path="../interfaces.ts" />
+/// <reference path="../models/project.ts" />
+var App;
+(function (App) {
+    class ProjectItem extends App.Component {
+        constructor(hostId, project) {
+            super('single-project', hostId, false);
+            this._project = project;
+            this.configure();
+            this.renderContents();
+        }
+        get projectMembers() {
+            switch (this._project.people) {
+                case 1:
+                    return '1 member';
+                default:
+                    return `${this._project.people} members`;
+            }
+        }
+        dragStartHandler(event) {
+            event.dataTransfer.setData('text/plain', this._project.id);
+            event.dataTransfer.effectAllowed = 'move';
+        }
+        dragEndHandler(_) {
+        }
+        configure() {
+            this.element.id = this._project.id;
+            this.element.addEventListener('dragstart', this.dragStartHandler);
+            this.element.addEventListener('dragend', this.dragEndHandler);
+        }
+        renderContents() {
+            this.element.querySelector('h2').textContent = this._project.title;
+            this.element.querySelector('h3').textContent = this.projectMembers;
+            this.element.querySelector('p').textContent = this._project.description;
+        }
+    }
+    __decorate([
+        App.Autobind
+    ], ProjectItem.prototype, "dragStartHandler", null);
+    __decorate([
+        App.Autobind
+    ], ProjectItem.prototype, "dragEndHandler", null);
+    App.ProjectItem = ProjectItem;
 })(App || (App = {}));
 //# sourceMappingURL=bundle.js.map
