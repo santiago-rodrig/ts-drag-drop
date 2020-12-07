@@ -1,9 +1,7 @@
-/// <reference path="components/project-input.ts" />
-/// <reference path="components/project-list.ts" />
-/// <reference path="enums.ts" />
+import { ProjectsInput } from './components/project-input.js'
+import { ProjectsList } from './components/project-list.js'
+import { ProjectStatus } from './enums.js'
 
-namespace App {
-    new ProjectsInput()
-    new ProjectsList(ProjectStatus.ACTIVE)
-    new ProjectsList(ProjectStatus.INACTIVE)
-}
+new ProjectsInput()
+new ProjectsList(ProjectStatus.ACTIVE)
+new ProjectsList(ProjectStatus.INACTIVE)
