@@ -1,7 +1,7 @@
-import { Component } from './base.js'
+import Component from './base.js'
 import { Autobind } from '../decorators.js'
 import { projectState } from '../state/projects.js'
-import { ValidatableString, ValidatableNumber, validate } from '../validations.js'
+import * as Validation from '../validations.js'
 
 export class ProjectsInput extends Component<HTMLDivElement, HTMLFormElement> {
     titleInput: HTMLInputElement
@@ -49,26 +49,26 @@ export class ProjectsInput extends Component<HTMLDivElement, HTMLFormElement> {
         const descriptionInputValue = this.descriptionInput.value
         const peopleInputValue = this.peopleInput.value
 
-        const titleInputValidation: ValidatableString = {
+        const titleInputValidation: Validation.ValidatableString = {
             value: titleInputValue,
             minLength: 1,
         }
 
-        const descriptionInputValidation: ValidatableString = {
+        const descriptionInputValidation: Validation.ValidatableString = {
             value: descriptionInputValue,
             minLength: 5,
         }
 
-        const peopleInputValidation: ValidatableNumber = {
+        const peopleInputValidation: Validation.ValidatableNumber = {
             value: +peopleInputValue,
             min: 1,
             max: 10,
         }
 
         if (
-            !validate(titleInputValidation) ||
-            !validate(descriptionInputValidation) ||
-            !validate(peopleInputValidation)
+            !Validation.validate(titleInputValidation) ||
+            !Validation.validate(descriptionInputValidation) ||
+            !Validation.validate(peopleInputValidation)
         ) {
             alert('Invalid input values!')
             return

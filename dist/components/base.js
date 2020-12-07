@@ -1,4 +1,4 @@
-export class Component {
+export default class {
     constructor(templateId, targetNodeId, insertAtStart, newElementId) {
         this.templateEl = document.getElementById(templateId);
         this.targetNode = document.getElementById(targetNodeId);

@@ -1,5 +1,5 @@
-import { Component} from './base.js'
-import { DragTarget} from '../interfaces.js'
+import Component from './base.js'
+import { DragTarget } from '../interfaces.js'
 import { Project } from '../models/project.js'
 import { ProjectStatus } from '../enums.js'
 import { Autobind } from '../decorators.js'

@@ -1,4 +1,4 @@
-export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
+export default abstract class<T extends HTMLElement, U extends HTMLElement> {
     templateEl: HTMLTemplateElement
     targetNode: T
     element: U
