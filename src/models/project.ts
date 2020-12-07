@@ -1,9 +1,6 @@
-namespace App {
-    export enum ProjectStatus {
-        ACTIVE = 'active',
-        INACTIVE = 'finished',
-    }
+/// <reference path="../enums.ts" />
 
+namespace App {
     export class Project {
         id: string
         title: string
