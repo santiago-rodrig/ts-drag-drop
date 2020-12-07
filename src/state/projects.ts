@@ -1,5 +1,5 @@
-import { Project } from '../models/project.js'
-import { ProjectStatus } from '../enums.js'
+import { Project } from '../models/project'
+import { ProjectStatus } from '../enums'
 
 type ProjectData = [string, string, number]
 

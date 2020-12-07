@@ -1,6 +1,6 @@
-import { ProjectsInput } from './components/project-input.js'
-import { ProjectsList } from './components/project-list.js'
-import { ProjectStatus } from './enums.js'
+import { ProjectsInput } from './components/project-input'
+import { ProjectsList } from './components/project-list'
+import { ProjectStatus } from './enums'
 
 new ProjectsInput()
 new ProjectsList(ProjectStatus.ACTIVE)
