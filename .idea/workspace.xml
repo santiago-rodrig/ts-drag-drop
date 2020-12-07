@@ -2,22 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f0ab367-9b4c-443b-9a5d-82d06baf78a5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/dist/bundle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/bundle.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/bundle.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/base.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/base.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project-input.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project-input.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project-item.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project-item.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/project-list.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/project-list.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/decorators.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/decorators.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/enums.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/enums.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/project.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/project.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/state/projects.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/state/projects.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/validations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/validations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,11 +14,13 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="TypeScript File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="ProjectId" id="1lI4Lf37iLc0Y7xBRYtsGt4GONV" />
   <component name="ProjectLevelVcsManager">
@@ -57,12 +45,13 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.tslint" />
+    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dist" />
       <recent name="$PROJECT_DIR$/src/models" />
       <recent name="$PROJECT_DIR$/src/interfaces" />
     </key>
@@ -74,15 +63,35 @@
       <command value="yarn add -D tslint" />
       <command value="yarn remove tslint" />
       <command value="yarn add -D eslint" />
+      <command value="yarn add -D webpack webpack-dev-server webpack-cli typescript ts-loader" />
+      <command value="yarn remove lite-server" />
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.Run Project">
-    <configuration name="Run Project" type="JavascriptDebugType" uri="http://localhost:63342/ts-drag-drop/index.html" useBuiltInWebServerPort="true">
+  <component name="RunManager" selected="npm.Build">
+    <configuration name="Run Project" type="JavascriptDebugType" uri="http://localhost:63342/ts-drag-drop/dist/index.html" useBuiltInWebServerPort="true">
       <method v="2">
-        <option name="TypeScript.Before.Run" enabled="true" FAIL_ON_ERROR="true" CONFIG_PATH="$PROJECT_DIR$/tsconfig.json" />
+        <option name="NpmBeforeRunTask" enabled="true">
+          <package-json value="$PROJECT_DIR$/package.json" />
+          <command value="run" />
+          <scripts>
+            <script value="build" />
+          </scripts>
+          <node-interpreter value="project" />
+          <envs />
+        </option>
       </method>
     </configuration>
     <configuration default="true" type="JavascriptDebugType" uri="http://localhost:63342" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="Build" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
       <method v="2" />
     </configuration>
     <configuration name="Format the code" type="js.build_tools.npm">
@@ -95,8 +104,20 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="Serve" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="JavaScript Debug.Run Project" />
+      <item itemvalue="npm.Build" />
+      <item itemvalue="npm.Serve" />
       <item itemvalue="npm.Format the code" />
     </list>
   </component>
@@ -201,7 +222,14 @@
       <option name="project" value="LOCAL" />
       <updated>1607301405341</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="add bundling capabilities using webpack">
+      <created>1607311876493</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1607311876493</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,7 +262,8 @@
     <MESSAGE value="separate code using a namespace" />
     <MESSAGE value="separate code in folders and files" />
     <MESSAGE value="delete unnecessary references in app.ts" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete unnecessary references in app.ts" />
+    <MESSAGE value="add bundling capabilities using webpack" />
+    <option name="LAST_COMMIT_MESSAGE" value="add bundling capabilities using webpack" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

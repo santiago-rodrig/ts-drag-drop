@@ -1,10 +1,10 @@
-import Component from './base.js'
-import { DragTarget } from '../interfaces.js'
-import { Project } from '../models/project.js'
-import { ProjectStatus } from '../enums.js'
-import { Autobind } from '../decorators.js'
-import { projectState } from '../state/projects.js'
-import { ProjectItem } from './project-item.js'
+import Component from './base'
+import { DragTarget } from '../interfaces'
+import { Project } from '../models/project'
+import { ProjectStatus } from '../enums'
+import { Autobind } from '../decorators'
+import { projectState } from '../state/projects'
+import { ProjectItem } from './project-item'
 
 export class ProjectsList
     extends Component<HTMLDivElement, HTMLElement>
